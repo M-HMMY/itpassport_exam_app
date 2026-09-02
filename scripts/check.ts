@@ -66,6 +66,59 @@ for (const q of QUESTIONS) {
   if (q.explanation.trim() === '') err(`問題 ${q.id}: 解説が空`);
 }
 
+// ---- 問題が「解かなくても当てられる」形になっていないか ----
+// 実際にこれで偏っていた。試験対策として見抜かれる形は、問題として弱い。
+{
+  const sameText = new Map<string, string[]>();
+  for (const q of QUESTIONS) {
+    const key = q.question.replace(/\s+/g, '');
+    sameText.set(key, [...(sameText.get(key) ?? []), q.id]);
+  }
+  for (const ids of sameText.values()) {
+    if (ids.length > 1) err(`問題文がまったく同じ: ${ids.join(' / ')}`);
+  }
+
+  const pos = [0, 0, 0, 0];
+  let longest = 0;
+  let absoluteInCorrect = 0;
+  let absoluteInWrong = 0;
+  const absolute = /必ず|すべて|常に|まったく|一切/;
+  for (const q of QUESTIONS) {
+    pos[q.answer] += 1;
+    const lens = q.choices.map((c) => c.length);
+    q.choices.forEach((c, i) => {
+      if (!absolute.test(c)) return;
+      if (i === q.answer) absoluteInCorrect += 1;
+      else absoluteInWrong += 1;
+    });
+    // 正解だけが長いと、読まずに「長いものを選ぶ」で当てられてしまう。
+    // ただし 1〜2 文字の差まで数えると実態より大きく出るので、差の大きさで見る。
+    const other = Math.max(...lens.filter((_, i) => i !== q.answer));
+    if (lens[q.answer] >= other * 1.25 && lens[q.answer] - other >= 5) longest += 1;
+    if (lens[q.answer] > other * 1.5 && lens[q.answer] - other >= 8) {
+      warn(`問題 ${q.id}: 正解だけが突出して長い（正解 ${lens[q.answer]} 字 / 最長の誤答 ${other} 字）`);
+    }
+  }
+  const n = QUESTIONS.length;
+  if (n >= 40) {
+    pos.forEach((c, i) => {
+      const rate = c / n;
+      if (rate < 0.15 || rate > 0.35) {
+        warn(`正解の位置が ${'アイウエ'[i]} に偏っている（${c} / ${n} 問）。選択肢を並べ替えて散らすこと`);
+      }
+    });
+    if (longest / n > 0.3) {
+      warn(`正解がはっきり長い問題が ${longest} / ${n} 問。誤答も同じ密度で書くこと`);
+    }
+    if (absoluteInWrong >= 10 && absoluteInCorrect === 0) {
+      warn(
+        `「必ず」「すべて」などの言い切りが誤答だけに ${absoluteInWrong} 個ある。` +
+          'それ自体が手掛かりになるので、正しく言い切れる場面では正解側にも使うこと',
+      );
+    }
+  }
+}
+
 // ---- ドリルは実際に生成して確かめる（乱数なので複数回試す） ----
 for (const d of DRILLS) {
   for (let i = 0; i < 200; i++) {
