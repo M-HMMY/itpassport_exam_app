@@ -11,6 +11,7 @@ import { QUESTIONS } from '../src/data/questions';
 import { DRILLS } from '../src/data/drills';
 import { isKnownCommand } from '../src/lib/mathSymbols';
 import { renderCheck } from './render-check';
+import { readdirSync } from 'node:fs';
 
 const BACKSLASH = String.fromCharCode(92);
 const LF = String.fromCharCode(10);
@@ -86,8 +87,16 @@ for (const d of DRILLS) {
 
 // ---- 本文の記法 ----
 const KNOWN_DIAGRAMS = new Set(['flow', 'stack', 'tree', 'matrix', 'cycle', 'seq', 'bits', 'compare']);
-/** ```widget: で呼べるウィジェットの id。src/components/widgets/*.tsx のファイル名 */
-const KNOWN_WIDGETS = new Set<string>([]);
+/**
+ * ```widget: で呼べるウィジェットの id。`src/components/widgets/*.tsx` の
+ * ファイル名がそのまま id になる（Widget.tsx が同じ規則で自動登録している）。
+ * 手で並べると足したときに更新し忘れるので、ディレクトリを直接読む。
+ */
+const KNOWN_WIDGETS = new Set(
+  readdirSync('src/components/widgets')
+    .filter((f) => f.endsWith('.tsx'))
+    .map((f) => f.replace(/\.tsx$/, '')),
+);
 /** 本文リンクで飛べるページ（ハッシュルータの第 1 要素） */
 const KNOWN_PAGES = new Set([
   'home',

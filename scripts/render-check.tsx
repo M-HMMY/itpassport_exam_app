@@ -4,6 +4,17 @@ import { Markdown } from '../src/lib/markdown';
 import { SECTIONS } from '../src/data/textbook';
 import { QUESTIONS } from '../src/data/questions';
 import { DRILLS } from '../src/data/drills';
+import Arrow from '../src/components/widgets/arrow';
+import Availability from '../src/components/widgets/availability';
+import Bep from '../src/components/widgets/bep';
+import Capacity from '../src/components/widgets/capacity';
+import Color from '../src/components/widgets/color';
+import IpAddress from '../src/components/widgets/ipaddress';
+import Logic from '../src/components/widgets/logic';
+import Packet from '../src/components/widgets/packet';
+import Password from '../src/components/widgets/password';
+import Pubkey from '../src/components/widgets/pubkey';
+import Radix from '../src/components/widgets/radix';
 
 /**
  * 実際に描いてみて、画面に出てはいけないものが残っていないかを見る検査。
@@ -20,8 +31,24 @@ import { DRILLS } from '../src/data/drills';
 
 const BACKSLASH = String.fromCharCode(92);
 
-/** ウィジェットは import.meta.glob 経由だと check から読めないので、ここに直接並べる */
-const WIDGETS: [string, ComponentType][] = [];
+/**
+ * ウィジェットは import.meta.glob 経由だと check から読めないので、ここに直接並べる。
+ * `src/components/widgets/` にファイルを足したら、この一覧にも足すこと
+ * （足し忘れても動くが、描画の検査だけ素通りしてしまう）。
+ */
+const WIDGETS: [string, ComponentType][] = [
+  ['arrow', Arrow],
+  ['availability', Availability],
+  ['bep', Bep],
+  ['capacity', Capacity],
+  ['color', Color],
+  ['ipaddress', IpAddress],
+  ['logic', Logic],
+  ['packet', Packet],
+  ['password', Password],
+  ['pubkey', Pubkey],
+  ['radix', Radix],
+];
 
 /** 数式として描かれた部分だけを取り出す */
 function mathTexts(html: string): string[] {
