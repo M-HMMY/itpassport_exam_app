@@ -4,7 +4,9 @@ import { strategyBizQuestions } from './strategy-biz';
 import { managementQuestions } from './management';
 import { techBasicQuestions } from './tech-basic';
 import { techCompQuestions } from './tech-comp';
-import { technologyQuestions } from './technology';
+import { techMediaDbQuestions } from './tech-media-db';
+import { techNwQuestions } from './tech-nw';
+import { techSecQuestions } from './tech-sec';
 
 export const QUESTIONS: Question[] = [
   ...strategyQuestions,
@@ -12,7 +14,9 @@ export const QUESTIONS: Question[] = [
   ...managementQuestions,
   ...techBasicQuestions,
   ...techCompQuestions,
-  ...technologyQuestions,
+  ...techMediaDbQuestions,
+  ...techNwQuestions,
+  ...techSecQuestions,
 ];
 
 export const questionById = (id: string): Question | undefined => QUESTIONS.find((q) => q.id === id);
