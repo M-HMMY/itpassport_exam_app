@@ -2,12 +2,16 @@ import type { Question } from '../../types';
 import { strategyQuestions } from './strategy';
 import { strategyBizQuestions } from './strategy-biz';
 import { managementQuestions } from './management';
+import { techBasicQuestions } from './tech-basic';
+import { techCompQuestions } from './tech-comp';
 import { technologyQuestions } from './technology';
 
 export const QUESTIONS: Question[] = [
   ...strategyQuestions,
   ...strategyBizQuestions,
   ...managementQuestions,
+  ...techBasicQuestions,
+  ...techCompQuestions,
   ...technologyQuestions,
 ];
 
