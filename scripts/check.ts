@@ -78,6 +78,44 @@ for (const q of QUESTIONS) {
     if (ids.length > 1) err(`問題文がまったく同じ: ${ids.join(' / ')}`);
   }
 
+  // 完全一致だけでは、数字も選択肢も同じで語だけ言い換えた重複を見逃す。
+  // 実際に「800×600 画素、1 画素 24 ビット」の容量計算が 2 章に重複していた。
+  // 問題文だけで測ると「〜の説明として、最も適切なものはどれか」という定型が
+  // 効いて全部が似てしまうので、選択肢も混ぜて測る。
+  {
+    const grams = (q: (typeof QUESTIONS)[number]): Set<string> => {
+      const t = (q.question + [...q.choices].sort().join('')).replace(
+        /[\s。、，,．.「」『』（）()]/g,
+        '',
+      );
+      const set = new Set<string>();
+      for (let i = 0; i < t.length - 1; i += 1) set.add(t.slice(i, i + 2));
+      return set;
+    };
+    const rows = QUESTIONS.map((q) => ({ q, g: grams(q) }));
+    for (let i = 0; i < rows.length; i += 1) {
+      for (let j = i + 1; j < rows.length; j += 1) {
+        const a = rows[i].g;
+        const b = rows[j].g;
+        let hit = 0;
+        a.forEach((g) => {
+          if (b.has(g)) hit += 1;
+        });
+        const sim = (2 * hit) / (a.size + b.size);
+        // 同じ節の中で似るのは、対比のために対で作った問題（直列と並列、暗号化と
+        // 署名）なので正常。節をまたいで似ているものが、気づかずに書いた重複。
+        const sameSection =
+          rows[i].q.sectionId !== undefined && rows[i].q.sectionId === rows[j].q.sectionId;
+        if (sim >= 0.6 && !sameSection) {
+          warn(
+            `問題 ${rows[i].q.id} と ${rows[j].q.id} が別の節でほぼ同じ内容（類似度 ${sim.toFixed(2)}）。` +
+              '片方の数値か観点を変える',
+          );
+        }
+      }
+    }
+  }
+
   const pos = [0, 0, 0, 0];
   let longest = 0;
   let absoluteInCorrect = 0;
