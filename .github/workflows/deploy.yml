@@ -1,10 +1,11 @@
 name: Deploy to GitHub Pages
 
-# main へ push するたびにビルドして GitHub Pages へ公開する。
+# master へ push するたびにビルドして GitHub Pages へ公開する。
+# （このリポジトリの既定ブランチは main ではなく master）
 # 手動実行（Actions タブの Run workflow）もできる。
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 permissions:
