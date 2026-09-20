@@ -211,8 +211,12 @@ ITパスポート特有の検証観点として、**「初心者に通じるか�
 **Codex CLI が導入済みです**（`npm install -g @openai/codex`、ChatGPT ログイン済み）。教本の大半はこれで書きました。
 
 ```bash
-codex exec --cd "C:/Dev/itpassport_exam_app" --sandbox workspace-write --color never -o out.txt - < scripts/prompts/03-tech-sec.md
+codex exec --sandbox workspace-write --color never -o out.txt - < scripts/prompts/03-tech-sec.md
 ```
+
+**★ リポジトリの直下で走らせてください。**`--cd` を付けていないので、別の場所から叩くと、そのディレクトリを読みにいきます。
+（公開リポジトリにローカルパスを残さないため、2026 年 9 月 20 日に系譜全体から外しました。）
+
 
 実際に使ったプロンプトは [scripts/prompts/](scripts/prompts/) に全部残してあります。**残りの章や確認問題を書かせるときは、そこの README を読んでひな形にしてください。** 何をプロンプトに入れると品質が上がるか（間違えやすい事実の名指し、リンクしてよい節 id の全列挙など）を書いてあります。
 

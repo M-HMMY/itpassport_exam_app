@@ -33,11 +33,13 @@ npm run check   # データの整合性チェック（教本・問題・ドリ�
 `launch.cmd` をダブルクリックしても起動できます。デスクトップにショートカットを作る場合は次を実行します。
 
 ```powershell
+# ★ リポジトリの直下で実行してください。ここから絶対パスを組み立てます。
+$root = (Get-Location).Path
 $ws = New-Object -ComObject WScript.Shell
 $lnk = $ws.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Desktop')) 'ITパスポート 学習アプリ.lnk'))
-$lnk.TargetPath = 'C:\Dev\itpassport_exam_app\launch.cmd'
-$lnk.WorkingDirectory = 'C:\Dev\itpassport_exam_app'
-$lnk.IconLocation = 'C:\Dev\itpassport_exam_app\public\icons\icon.ico,0'
+$lnk.TargetPath = "$root\launch.cmd"
+$lnk.WorkingDirectory = $root
+$lnk.IconLocation = "$root\public\icons\icon.ico,0"
 $lnk.Save()
 ```
 
